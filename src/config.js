@@ -1,0 +1,1 @@
+export const UPLOAD_API_URL = "https://react-file-uploader-node.herokuapp.com/api/upload"
