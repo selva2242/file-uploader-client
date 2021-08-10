@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
 import './Uploader.css'
 import { UPLOAD_API_URL } from '../../config'
@@ -19,14 +18,14 @@ const Uploader = () => {
         if(showMessage){
             timerRef.current = setTimeout(() => {
                 setShowMessage(false)
-            }, 3000);
+            }, 1000);
         }
         return () => {
             if(timerRef.current) {
                 clearTimeout(timerRef.current);
             }
         };
-    }, [showMessage, uploading]);
+    }, [showMessage]);
 
 
     useEffect(() => {
@@ -53,13 +52,13 @@ const Uploader = () => {
                     setUploadStatus(false);
                     setShowMessage(true);
                 }
+                setUploading(false)
             })
         }catch(err){
             setUploadStatus(false);
             setShowMessage(true);
+            setUploading(false)
         }
-        setUploading(false)
-
     };
 
     return(
@@ -68,19 +67,20 @@ const Uploader = () => {
                 <form className="upload-Form" onSubmit={(e)=>onFileUpload(e)}>
                         <h1>Upload Image</h1> 
                         {
+                            uploading ?
+                            <span className="uploadClass">Uploading file...</span>
+                            :
                             <span className={!showMessage ? "uploadClass" : 
-                            uploadStatus ? "successClass" : "failureClass"}>
-                            {
-                                !showMessage ? "Choose your file and Click Upload" :
-                                (uploading===true ? "Uploading your file..." :
-                                (uploadStatus ? successText : failureText))
-                            }
-                            </span> 
+                                uploadStatus ? "successClass" : "failureClass"}>
+                                {
+                                    !showMessage ? "Choose your file and Click Upload" :
+                                    (uploadStatus ? successText : failureText)
+                                }
+                            </span>                    
                         }
                         <input type="file" className="file-upload-input" onChange={(e) => setFile(e.target.files[0])}/>
                         <input className="Upload-Button" type="submit"  disabled={file==="" || uploading} value="Upload"/>
                 </form>
-                
             </div>
             <div className="uploadedFiles">
                 <h1>Your Files</h1> 
@@ -89,7 +89,7 @@ const Uploader = () => {
                     uploadedFiles.length>0 ?
                         uploadedFiles.map((file, i) => 
                         <li key={i} className="li-item">
-                            <a  href={file.fileLocation} target="_blank"> {file.fileName.split("-")[1]} </a>
+                            <a  href={file.fileLocation} target="_blank" rel="noreferrer"> {file.fileName.split("-")[1]} </a>
                         </li>
                         )
                     :
@@ -102,3 +102,6 @@ const Uploader = () => {
 }
 
 export default Uploader;
+
+
+// https://condescending-elion-db8712.netlify.app/
